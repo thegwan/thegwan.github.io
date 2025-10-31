@@ -1,0 +1,179 @@
+<!-- pandoc -s mypost.md -o index.html --template=../../template.html  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3K08137EP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3K08137EP4');
+</script>
+  <title></title>
+  <meta name="author" content="Gerry Wan" />
+  <link
+  href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap"
+  rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="/"></a>
+      </div>
+      <div class="nav-right">
+        <a href="/">Home</a>
+        <a href="/posts/">Posts</a>
+        <a href="https://www.linkedin.com/in/gerrywan/">LinkedIn</a>
+        <a
+        href="https://scholar.google.com/citations?user=Z-4DBYkAAAAJ&hl=en">Scholar</a>
+        <a href="/files/gerry_wan_cv.pdf">CV</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 id="seq2seq-and-encoder-decoder-models">Seq2Seq and Encoder-Decoder
+    Models</h1>
+    <p><em>2025-06-24</em></p>
+    <p>Back in December, <em><a href="https://arxiv.org/pdf/1409.3215"
+    target="_blank" rel="noopener noreferrer">Sequence to Sequence Learning with
+    Neural Networks</a></em>, by Ilya Sutskever, Oriol Vinyals, and Quoc Le, was
+    awarded one of the 2024 NeurIPS Test of Time awards. For anyone who isn’t
+    steeped in academic research, Test of Time awards are typically given out to
+    papers that have had a significant and lasting impact on their field
+    (usually awarded at least 10 years after publication), and this one
+    certainly deserves that recognition.</p>
+    <p>Ilya gave a retrospective <a
+    href="https://www.youtube.com/watch?v=1yvBqasHLZs" target="_blank"
+    rel="noopener noreferrer">talk</a> at NeurIPS reflecting on the 10 years
+    since the paper came out: what they got right, what they got wrong, and how
+    it has played a role in this crazy decade of progress in NLP and AI. It’s
+    probably not a stretch to say that many of the capabilities of modern AI can
+    trace its roots back to key contributions made in this work.</p>
+    <p>Ironically, I hadn’t actually read the original paper until I watched a
+    recording of that talk. Despite my ignorance, I feel that this paper serves
+    as a useful starting point for understanding many of the ideas behind modern
+    AI systems.</p>
+    <p>In this post, I’ll unpack the core concepts behind sequence-to-sequence
+    models and the encoder-decoder architecture popularized<a href="#fn1"
+    class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> by the
+    paper. This design has led to major advancements in machine translation,
+    text generation, and LLMs, and I think it’s super helpful to revisit and
+    understand how it works.</p>
+    <h2 id="sequence-to-sequence-models">Sequence to Sequence Models</h2>
+    <p>Sequence to sequence (seq2seq) models are designed to convert an input
+    sequence into an output sequence. This is an extremely useful ability, since
+    many real-world problems/tasks involve sequences of variable and/or unknown
+    length. Classic examples include machine translation (input a sequence of
+    words in one language and output a sequence of words in another) and
+    question answering (input a question and output the answer in natural
+    language).</p>
+    <p>By 2014, Deep Neural Networks (DNNs) were already quite good at problems
+    like speech recognition and image classification, which notably do
+    <em>not</em> typically involve sequences unless you frame the problem in a
+    non-standard way. Meanwhile, Recurrent Neural Networks (RNNs), especially
+    advanced variants like LSTMs, could handle sequence to sequence generation
+    where the inputs and outputs have the same length. But these models fell
+    short when input and output lengths could differ, leading to an architecture
+    now known as the Encoder-Decoder model.</p>
+    <h2 id="the-encoder-decoder-architecture">The Encoder-Decoder
+    Architecture</h2>
+    <p>At a high level, the Encoder-Decoder model (as described in the paper,
+    though the idea has generalized far beyond it by now) consists of two RNNs:
+    an encoder RNN and a decoder RNN. The original paper actually used
+    multilayered LSTMs, but I’ll refer to them as RNNs for simplicity and
+    without loss of generality.</p>
+    <figure style="text-align: center;">
+    <img src="/posts/seq2seq/seq2seq_encoder_decoder.svg" alt="vanilla seq2seq
+    encoder-decoder architecture" width="80%" />
+    <figcaption>
+    Figure 1: A vanilla seq2seq encoder-decoder architecture based on RNNs.
+    </figcaption>
+    </figure>
+    <p>The encoder takes the embedded input sequence and processes it one token
+    at a time. After consuming the entire input, it outputs a single, fixed-size
+    “context vector” that represents a compressed version of the entire input.
+    In the case of machine translation, this context vector would ideally
+    capture all of the semantic meaning of the source sentence that you would
+    want represented in its translation.</p>
+    <p>The decoder then takes the context vector from the encoder and uses it as
+    a starting “seed” to generate the output sequence. At each time step, the
+    decoder generates one token, using the previously generated token as input.
+    Crucially, the decoder relies only on information from the context vector.
+    It doesn’t have direct access to the original input sequence, and has no
+    concept of its length or structure. This is part of what allows it to handle
+    input and output sequences of varying lengths, and the magic happens with
+    how well that context vector captures the input.</p>
+    <p>Each decoder hidden state is passed through a linear layer that maps it
+    to a vector of logits, which are then softmaxxed into a probability
+    distribution over the output vocabulary. The token with the highest
+    probability (or sampled from this distribution) is chosen as the output
+    token.</p>
+    <h3 id="sos-and-eos">SOS and EOS</h3>
+    <p>You might notice the SOS and EOS tokens in Figure 1. These are special
+    tokens that represent “start of sentence” and “end of sentence”,
+    respectively. During decoding, the model begins generating the output
+    sequence when it sees SOS, and stops when it produces an EOS. It learns this
+    behavior during training, but at inference time, it is explicitly fed SOS as
+    the first decoder input and hard-coded to stop once EOS is generated. The
+    original paper used EOS for both purposes, but having distinct SOS and EOS
+    tokens is a bit more modern practice.</p>
+    <h3 id="a-neat-trick-reversing-the-input-sequence">A neat trick: Reversing
+    the input sequence</h3>
+    <p>The paper also introduces a clever trick where you actually reverse the
+    input sequence, so that the beginning of the source sentence appears closer
+    to the beginning of the translated sentence when the decoder starts
+    generating tokens. The idea is that if you keep the original order, the
+    early parts of the source sentence might be too far from the decoder and
+    “forgotten” by the time the encoder outputs the context vector. The authors
+    found that this led to empirically better results in their translation
+    benchmarks, but this trick isn’t used as much these days since long-range
+    dependencies are better handled through attention mechanisms.</p>
+    <h2 id="training-and-inference">Training and Inference</h2>
+    <p>During training, the encoder processes example input sequences and the
+    decoder learns to generate correct output sequences (e.g., correctly
+    translated sentences). Importantly, during training, the decoder does not
+    actually use its predicted previous token as input to the next time step
+    (contrary to what I drew in Figure 1). It actually uses the ground truth
+    previous token, which helps with training stability. Today, this is known as
+    “teacher forcing”. The decoder’s predicted output at each time step is
+    compared to the ground truth token using cross-entropy loss, and all the
+    weights of the end-to-end model are updated with backpropagation through
+    time in standard RNN fashion.</p>
+    <p>During inference, the model of course does not know the ground truth
+    output. So the decoder uses its predicted output in the previous time step
+    as input for the next, even if it might be incorrect.</p>
+    <p>And that’s pretty much it for the basics of seq2seq models and the
+    encoder-decoder architecture! While the results of this paper were very
+    impressive at the time, you can imagine that a single fixed-size context
+    vector to represent an entire input sequence might not be enough, especially
+    for very long or complex sentences. One solution to this is a (now
+    revolutionary) mechanism called
+    <em>attention</em>, which I’ll discuss in a future post.</p>
+    <section id="footnotes" class="footnotes footnotes-end-of-document"
+    role="doc-endnotes">
+    <hr />
+    <ol>
+    <li id="fn1"><p>While this paper really helped popularize the
+    encoder-decoder model thanks to its strong results and use of LSTMs, it
+    never actually refers to it by that name. In fact, it was introduced earlier
+    by Cho et al. in <em><a href="https://arxiv.org/pdf/1409.3215"
+    target="_blank" rel="noopener noreferrer">Learning phrase representations
+    using RNN encoder-decoder for statistical machine translation</a></em> and
+    also Kalchbrenner and Blunsom in <em><a
+    href="https://aclanthology.org/D13-1176.pdf" target="_blank" rel="noopener
+    noreferrer">Recurrent continuous translation models</a></em>, which the
+    authors cite extensively.<a href="#fnref1" class="footnote-back"
+    role="doc-backlink">↩︎</a></p></li>
+    </ol>
+    </section>
+  </main>
+</body>
+</html>

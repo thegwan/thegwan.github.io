@@ -1,0 +1,233 @@
+html {
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  background-color: rgba(255, 255, 255, 0.992);
+  color: #222;
+  line-height: 1.6;
+  padding-top: 50px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.intro {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.intro .text {
+  flex: 1 1 60%;
+}
+
+.profile-img {
+  flex: 1 1 30%;
+  max-width: 200px;
+}
+.profile-img img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 60px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+h3 {
+  color: #0066cc;
+}
+
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.links {
+  margin: 10px 0;
+}
+.links a {
+  margin-right: 15px;
+  font-weight: 500;
+}
+
+.entry {
+  margin: 20px 0;
+}
+
+.email {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;   /* add bottom padding for balance */
+  width: 100%;
+  background-color: #fff;
+  z-index: 1000;
+  box-sizing: border-box; /* so padding doesn't expand height unexpectedly */
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nav-left a {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #111;
+  text-decoration: none;
+}
+
+.nav-right a {
+  margin-left: 1em;
+  color: #444;
+  text-decoration: none;
+  font-size: 0.95em;
+}
+
+.nav-right a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.post-item {
+  margin-bottom: 1.5em;
+}
+
+.post-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #0066cc;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
+
+.post-meta {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 0.25em;
+}
+
+footer {
+  text-align: right;
+  font-size: 0.7em;
+  margin-top: 80px;
+  color: #999;
+}
+footer a {
+  color: #888;
+}
+
+/* Pandoc syntax highlighting */
+code.sourceCode {
+  background: #f8f8f8;
+  border-radius: 6px;
+  padding: 0.75em 1em;
+  margin: 1em 0;
+  font-size: 1em;
+  overflow-x: auto;
+  display: block;
+  line-height: 1.5;
+}
+code.sourceCode .kw, code.sourceCode .cf {
+  color: #007020;
+  font-weight: bold;
+}
+code.sourceCode .dt {
+  color: #902000;
+}
+code.sourceCode .dv, code.sourceCode .bn, code.sourceCode .fl {
+  color: #40a070;
+}
+code.sourceCode .st, code.sourceCode .ch {
+  color: #4070a0;
+}
+code.sourceCode .co, code.sourceCode .do {
+  color: #60a0b0;
+  font-style: italic;
+}
+code.sourceCode .ot {
+  color: #007020;
+}
+code.sourceCode .al, code.sourceCode .er {
+  color: #ff0000;
+  font-weight: bold;
+}
+code.sourceCode .fu {
+  color: #06287e;
+}
+code.sourceCode .op {
+  color: #666666;
+}
+code.sourceCode .pp {
+  color: #bc7a00;
+}
+code.sourceCode .at {
+  color: #7d9029;
+}
+code.sourceCode .an, code.sourceCode .wa, code.sourceCode .in {
+  color: #60a0b0;
+  font-weight: bold;
+  font-style: italic;
+}
+code.sourceCode .ss {
+  color: #bb6688;
+}
+code.sourceCode .cn {
+  color: #880000;
+}
+
+code:not(.sourceCode) {
+  color: #007020;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+li > strong {
+  color: #0066cc;
+}
+
+.highlight {
+  background: #ecf6fe;
+  border-radius: 3px;
+  padding: 0 3px;
+}
