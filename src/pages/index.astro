@@ -58,11 +58,15 @@ const links = [
   const btn = document.querySelector<HTMLButtonElement>('button.email');
   const addr = btn?.querySelector<HTMLSpanElement>('.addr');
   btn?.addEventListener('click', () => {
-    if (!btn || !addr || btn.classList.contains('open')) return;
-    addr.textContent = 'moc tod liamg ta nwyrrg'.split('').reverse().join('');
-    btn.classList.add('open');
-    btn.setAttribute('aria-expanded', 'true');
-    btn.removeAttribute('aria-label');
+    if (!btn || !addr) return;
+    if (!addr.textContent) {
+      addr.textContent = 'moc tod liamg ta nwyrrg'.split('').reverse().join('');
+    }
+    // Slide to the address's real width so the motion ends exactly at the last letter.
+    btn.style.setProperty('--addr-w', `${addr.scrollWidth}px`);
+    const open = btn.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Hide email address' : 'Show email address');
   });
 </script>
 
@@ -146,21 +150,28 @@ const links = [
     border-radius: 2px;
   }
 
-  /* Email: the label slides shut while the address slides open. */
+  /* Email: on open, the label steps aside and the address slides open left to right.
+     On close, the address slides shut right to left, then the label returns. */
   .slot {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
     vertical-align: bottom;
-    transition: max-width 420ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 260ms ease;
   }
 
-  .label { max-width: 5em; }
-  .addr { max-width: 0; opacity: 0; }
+  .label {
+    max-width: 5em;
+    transition: max-width 0s 380ms, opacity 0s 380ms;
+  }
 
-  .email.open { cursor: text; user-select: text; color: var(--ink); }
-  .email.open .label { max-width: 0; opacity: 0; }
-  .email.open .addr { max-width: 16em; opacity: 1; }
+  .addr {
+    max-width: 0;
+    transition: max-width 380ms cubic-bezier(0.3, 0.6, 0.2, 1);
+  }
+
+  .email.open { user-select: text; color: var(--ink); }
+  .email.open .label { max-width: 0; opacity: 0; transition: none; }
+  .email.open .addr { max-width: var(--addr-w, 16em); }
 
   @media (prefers-reduced-motion: reduce) {
     .slot, .bracket, .bracket::before, .bracket::after { transition: none; }
