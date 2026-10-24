@@ -1,0 +1,101 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import profile from '../assets/profile.jpeg';
+
+const og = await getImage({ src: profile, width: 600, height: 600, format: 'jpeg' });
+
+const links = [
+  { label: 'Email', href: 'mailto:EMAIL_PLACEHOLDER' },
+  { label: 'GitHub', href: 'https://github.com/thegwan' },
+  { label: 'Scholar', href: 'https://scholar.google.com/citations?user=Z-4DBYkAAAAJ&hl=en' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/gerrywan/' },
+  { label: 'CV', href: '/files/gerry_wan_cv.pdf' },
+];
+---
+
+<Base
+  title="Gerry Wan"
+  description="Gerry Wan works on inference efficiency for Gemini at Google."
+  image={og.src}
+>
+  <main>
+    <Image
+      src={profile}
+      alt="Gerry Wan"
+      width={176}
+      height={176}
+      densities={[1, 2]}
+      class="photo"
+      loading="eager"
+    />
+    <div class="text">
+      <h1>Gerry Wan</h1>
+      <p>
+        I work on inference efficiency for Gemini at Google, focusing on the Flash models
+        across TPU generations.
+      </p>
+      <p>
+        I did my PhD at <a href="https://cs.stanford.edu">Stanford</a> on ML inference
+        optimization and high-performance networking, and studied electrical engineering at
+        <a href="https://ece.princeton.edu">Princeton</a>.
+      </p>
+      <nav aria-label="Links">
+        <ul>
+          {links.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: clamp(64px, 16vh, 160px) 24px 96px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  .photo {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+    border: 1px solid var(--line);
+  }
+
+  .text {
+    flex: 1 1 360px;
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  p { margin: 16px 0 0; }
+  h1 + p { margin-top: 20px; }
+
+  ul {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+</style>
