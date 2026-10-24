@@ -6,7 +6,6 @@ import profile from '../assets/profile.jpeg';
 const og = await getImage({ src: profile, width: 600, height: 600, format: 'jpeg' });
 
 const links = [
-  { label: 'Email', href: 'mailto:grrywn@gmail.com' },
   { label: 'GitHub', href: 'https://github.com/thegwan' },
   { label: 'Scholar', href: 'https://scholar.google.com/citations?user=Z-4DBYkAAAAJ&hl=en' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/gerrywan/' },
@@ -40,14 +39,32 @@ const links = [
       </p>
       <nav aria-label="Links">
         <ul>
+          <li>
+            <button type="button" class="bracket email" aria-expanded="false" aria-label="Show email address">
+              <span class="slot label">Email</span><span class="slot addr" aria-live="polite"></span>
+            </button>
+          </li>
           {links.map((l) => (
-            <li><a href={l.href}>{l.label}</a></li>
+            <li><a class="bracket" href={l.href}>{l.label}</a></li>
           ))}
         </ul>
       </nav>
     </div>
   </main>
 </Base>
+
+<script>
+  // The address is assembled only on click, so it never appears in the page source.
+  const btn = document.querySelector<HTMLButtonElement>('button.email');
+  const addr = btn?.querySelector<HTMLSpanElement>('.addr');
+  btn?.addEventListener('click', () => {
+    if (!btn || !addr || btn.classList.contains('open')) return;
+    addr.textContent = 'moc tod liamg ta nwyrrg'.split('').reverse().join('');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.removeAttribute('aria-label');
+  });
+</script>
 
 <style>
   main {
@@ -92,8 +109,60 @@ const links = [
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 22px;
+    gap: 8px 20px;
     font-size: 15px;
     color: var(--muted);
+  }
+
+  /* Bracketed links: [GitHub] instead of underlines. */
+  .bracket {
+    display: inline-flex;
+    align-items: baseline;
+    text-decoration: none;
+    color: var(--muted);
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: color 120ms ease;
+  }
+
+  .bracket::before { content: '['; }
+  .bracket::after { content: ']'; }
+  .bracket::before,
+  .bracket::after { color: var(--muted); opacity: 0.6; transition: color 120ms ease, opacity 120ms ease; }
+
+  .bracket:hover,
+  .bracket:focus-visible { color: var(--accent); }
+  .bracket:hover::before,
+  .bracket:hover::after,
+  .bracket:focus-visible::before,
+  .bracket:focus-visible::after { color: var(--accent); opacity: 1; }
+
+  .bracket:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Email: the label slides shut while the address slides open. */
+  .slot {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: bottom;
+    transition: max-width 420ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 260ms ease;
+  }
+
+  .label { max-width: 5em; }
+  .addr { max-width: 0; opacity: 0; }
+
+  .email.open { cursor: text; user-select: text; color: var(--ink); }
+  .email.open .label { max-width: 0; opacity: 0; }
+  .email.open .addr { max-width: 16em; opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slot, .bracket, .bracket::before, .bracket::after { transition: none; }
   }
 </style>
