@@ -1,7 +1,7 @@
 ---
-import '@fontsource/newsreader/400.css';
-import '@fontsource/instrument-sans/400.css';
-import '@fontsource/instrument-sans/500.css';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import '@fontsource/source-serif-4/600.css';
 
 interface Props {
   title: string;
@@ -56,8 +56,7 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     --muted: #5e625d;
     --line: #e2e2dc;
     --accent: #1f6f5c;
-    --serif: 'Newsreader', Georgia, serif;
-    --sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    --serif: 'Source Serif 4', Charter, 'Iowan Old Style', Georgia, serif;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -75,9 +74,9 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
   html {
     background: var(--bg);
     color: var(--ink);
-    font-family: var(--sans);
-    font-size: 17px;
-    line-height: 1.65;
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
