@@ -15,27 +15,30 @@ const links = [
 
 <Base
   title="Gerry Wan"
-  description="Gerry Wan works on inference efficiency for Gemini at Google."
+  description="Gerry Wan works on Gemini inference efficiency at Google."
   image={og.src}
 >
   <main>
     <Image
       src={profile}
       alt="Gerry Wan"
-      width={176}
-      height={176}
+      width={280}
+      height={280}
       densities={[1, 2]}
       class="photo"
       loading="eager"
     />
     <div class="text">
       <h1>Gerry Wan</h1>
+      <p>I work on Gemini inference efficiency at Google.</p>
       <p>
-        I work on inference efficiency for Gemini at Google.
-      </p>
-      <p>
-        I did my PhD at Stanford on ML inference optimization and high-performance networking,
-        and studied electrical engineering at Princeton.
+        I received my PhD in Computer Science from
+        <a href="https://cs.stanford.edu">Stanford University</a>, advised by
+        <a href="https://zakird.com">Zakir Durumeric</a>, where I worked on ML inference
+        optimization and high-performance networking. Previously, I graduated summa cum laude
+        with a BSE in Electrical Engineering from
+        <a href="https://ece.princeton.edu">Princeton University</a>, advised by
+        <a href="https://www.princeton.edu/~pmittal">Prateek Mittal</a>.
       </p>
       <nav aria-label="Links">
         <ul>
@@ -82,8 +85,8 @@ const links = [
   }
 
   .photo {
-    width: 88px;
-    height: 88px;
+    width: 140px;
+    height: 140px;
     border-radius: 4px;
     object-fit: cover;
     flex: none;
@@ -97,15 +100,13 @@ const links = [
 
   h1 {
     margin: 0;
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: 44px;
-    line-height: 1.08;
-    letter-spacing: -0.015em;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
   }
 
   p { margin: 16px 0 0; }
-  h1 + p { margin-top: 20px; }
+  h1 + p { margin-top: 12px; }
 
   ul {
     list-style: none;
@@ -114,7 +115,7 @@ const links = [
     display: flex;
     flex-wrap: wrap;
     gap: 8px 20px;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--muted);
   }
 
