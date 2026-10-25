@@ -1,7 +1,4 @@
 ---
-import '@fontsource/source-serif-4/400.css';
-import '@fontsource/source-serif-4/400-italic.css';
-import '@fontsource/source-serif-4/600.css';
 
 interface Props {
   title: string;
@@ -25,7 +22,7 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#F7F7F4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#121413" media="(prefers-color-scheme: dark)" />
 
     <meta property="og:type" content="website" />
@@ -51,12 +48,12 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
 
 <style is:global>
   :root {
-    --bg: #f7f7f4;
+    --bg: #ffffff;
     --ink: #191a18;
     --muted: #5e625d;
-    --line: #e2e2dc;
+    --line: #e4e4e1;
     --accent: #1f6f5c;
-    --serif: 'Source Serif 4', Charter, 'Iowan Old Style', Georgia, serif;
+    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -74,8 +71,8 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
   html {
     background: var(--bg);
     color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
+    font-family: var(--sans);
+    font-size: 17px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
