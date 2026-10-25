@@ -37,7 +37,7 @@ const links = [
         <ul>
           <li>
             <button type="button" class="bracket email" aria-expanded="false" aria-label="Show email address">
-              <span class="slot label">Email</span><span class="slot addr" aria-live="polite"></span>
+              <span class="reveal"><span class="label">Email</span><span class="addr" aria-live="polite"></span></span>
             </button>
           </li>
           {links.map((l) => (
@@ -52,18 +52,25 @@ const links = [
 <script>
   // The address is assembled only on click, so it never appears in the page source.
   const btn = document.querySelector<HTMLButtonElement>('button.email');
+  const reveal = btn?.querySelector<HTMLSpanElement>('.reveal');
+  const label = btn?.querySelector<HTMLSpanElement>('.label');
   const addr = btn?.querySelector<HTMLSpanElement>('.addr');
-  btn?.addEventListener('click', () => {
-    if (!btn || !addr) return;
-    if (!addr.textContent) {
-      addr.textContent = 'moc tod liamg ta nwyrrg'.split('').reverse().join('');
-    }
-    // Slide to the address's real width so the motion ends exactly at the last letter.
-    btn.style.setProperty('--addr-w', `${addr.scrollWidth}px`);
-    const open = btn.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? 'Hide email address' : 'Show email address');
-  });
+
+  if (btn && reveal && label && addr) {
+    // One box whose width slides between the two words, so closing narrows straight back to "Email".
+    const fitTo = (el: HTMLElement) => { reveal.style.width = `${el.offsetWidth}px`; };
+    fitTo(label);
+
+    btn.addEventListener('click', () => {
+      if (!addr.textContent) {
+        addr.textContent = 'moc tod liamg ta nwyrrg'.split('').reverse().join('');
+      }
+      const open = btn.classList.toggle('open');
+      fitTo(open ? addr : label);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Hide email address' : 'Show email address');
+    });
+  }
 </script>
 
 <style>
@@ -144,30 +151,31 @@ const links = [
     border-radius: 2px;
   }
 
-  /* Email: on open, the label steps aside and the address slides open left to right.
-     On close, the address slides shut right to left, then the label returns. */
-  .slot {
-    display: inline-block;
+  /* Email: one clipped box slides between the width of "Email" and the address.
+     Opening swaps in the address and widens left to right; closing narrows right to left
+     to exactly the width of "Email", then swaps the label back. */
+  .reveal {
+    display: inline-grid;
+    grid-template-columns: max-content;
     overflow: hidden;
-    white-space: nowrap;
     vertical-align: bottom;
+    transition: width 380ms cubic-bezier(0.3, 0.6, 0.2, 1);
   }
 
-  .label {
-    max-width: 5em;
-    transition: max-width 0s 380ms, opacity 0s 380ms;
+  .reveal > span {
+    grid-area: 1 / 1;
+    justify-self: start;
+    white-space: nowrap;
   }
 
-  .addr {
-    max-width: 0;
-    transition: max-width 380ms cubic-bezier(0.3, 0.6, 0.2, 1);
-  }
+  .label { transition: opacity 0s 380ms; }
+  .addr { opacity: 0; transition: opacity 0s 380ms; }
 
   .email.open { user-select: text; color: var(--ink); }
-  .email.open .label { max-width: 0; opacity: 0; transition: none; }
-  .email.open .addr { max-width: var(--addr-w, 16em); }
+  .email.open .label { opacity: 0; transition: none; }
+  .email.open .addr { opacity: 1; transition: none; }
 
   @media (prefers-reduced-motion: reduce) {
-    .slot, .bracket, .bracket::before, .bracket::after { transition: none; }
+    .reveal, .label, .addr, .bracket, .bracket::before, .bracket::after { transition: none; }
   }
 </style>
